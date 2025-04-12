@@ -41,7 +41,7 @@ def main():
         if not line:
             continue
         try:
-            G = nx.parse_graph6(line)
+            G = nx.from_graph6_bytes(line.encode())
             if graph_passes_filter(G, rules):
                 print(line)
         except Exception as e:
