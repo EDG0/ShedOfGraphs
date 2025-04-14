@@ -17,43 +17,51 @@ def count_edges_with_degree_sum(G, target_sum):
 
 def graph_passes_filter(G, rules):
     for rule in rules:
+        # Verplicht aanwezige sleutels
+        if "degree_sum" not in rule or "edges" not in rule or "type" not in rule:
+            raise KeyError("Filterregel mist 'degree_sum', 'edges' of 'type'")
+
         deg_sum = rule["degree_sum"]
         required_edges = rule["edges"]
+        rule_type = rule["type"]
+
         count = count_edges_with_degree_sum(G, deg_sum)
 
-        if rule["type"] == "min" and count < required_edges:
-            return False
-        elif rule["type"] == "max" and count > required_edges:
-            return False
-        elif rule["type"] == "exact" and count != required_edges:
-            return False
+        if rule_type == "min":
+            if count < required_edges:
+                return False
+        elif rule_type == "max":
+            if count > required_edges:
+                return False
+        elif rule_type == "exact":
+            if count != required_edges:
+                return False
+        else:
+            raise ValueError(f"Ongeldig filtertype: {rule_type}")
+
     return True
 
 def main():
     rules = load_filter()
-    passed_graphs = []
-    total_graphs = 0
+    logger = HistoryLogger()
+    input_lines = []
+    passed = []
 
     for line in sys.stdin:
         line = line.strip()
         if not line:
             continue
-        total_graphs += 1
+        input_lines.append(line)
         try:
             G = nx.from_graph6_bytes(line.encode())
             if graph_passes_filter(G, rules):
                 print(line)
-                passed_graphs.append(line)
+                passed.append(line)
         except Exception as e:
             print(f"Fout bij verwerken van graaf: {e}", file=sys.stderr)
 
-    logger = HistoryLogger()
-    logger.log(
-        input_count=total_graphs,
-        output_count=len(passed_graphs),
-        filter_used=rules,
-        passed_graphs=passed_graphs
-    )
+    logger.log(len(input_lines), len(passed), rules, passed)
 
 if __name__ == "__main__":
     main()
+
