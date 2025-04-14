@@ -13,3 +13,4 @@ class HistoryLogger:
 
         with open(self.filepath, "a") as f:
             f.write(line)
+
