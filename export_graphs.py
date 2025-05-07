@@ -3,35 +3,41 @@ import os
 import networkx as nx
 import matplotlib.pyplot as plt
 
-def parse_graph6_line(line):
-    try:
-        return nx.from_graph6_bytes(line.strip().encode('utf-8'))
-    except Exception as e:
-        print(f"Fout bij parsen van regel: {line.strip()} — {e}")
-        return None
 
-def export_graphs(input_file, export_dir, image_format):
-    if not os.path.exists(export_dir):
-        os.makedirs(export_dir)
+def export_graphs(input_file, output_folder, image_format):
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
 
-    with open(input_file, 'r') as f:
-        for i, line in enumerate(f):
-            G = parse_graph6_line(line)
-            if G is None:
-                continue
+    with open(input_file, "r") as f:
+        lines = f.readlines()
 
-            plt.figure(figsize=(3, 3))
-            nx.draw(G, with_labels=True, node_size=300)
-            output_path = os.path.join(export_dir, f'graph_{i}.{image_format}')
-            plt.savefig(output_path, format=image_format)
-            plt.close()
-            print(f"Graph {i} geëxporteerd naar {output_path}")
+    graph_counter = 0
+    for i, line in enumerate(lines):
+        graph_str = line.strip()
+        try:
+            # probeer regel als graph6 in te lezen
+            G = nx.from_graph6_bytes(graph_str.encode())
+            nx.draw(G, with_labels=True, node_size=300, font_size=10)
+            path = os.path.join(output_folder, f"graph_{graph_counter}.{image_format}")
+            plt.savefig(path)
+            plt.clf()
+            print(f"✅ Graph {graph_counter} opgeslagen als {path}")
+            graph_counter += 1
+        except Exception as e:
+            print(f"⚠️  Fout bij graf {i}: {e}")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Exporteer grafen als afbeelding.")
-    parser.add_argument("--input", required=True, help="Pad naar het .txt bestand met grafen (één per regel in graph6-formaat)")
-    parser.add_argument("--export", required=True, help="Output map waar de afbeeldingen worden opgeslagen")
-    parser.add_argument("--image_format", default="png", help="Formaat (bv. png, jpg, svg)")
+    parser = argparse.ArgumentParser(description="Exporteer graph6 grafen naar afbeeldingsbestanden")
+    parser.add_argument("--input", required=True, help="Pad naar inputbestand met graph6-grafen")
+    parser.add_argument("--export", required=True, help="Folder om afbeeldingen in op te slaan")
+    parser.add_argument("--image_format", required=True, help="Afbeeldingsformaat (bv. png, svg)")
 
     args = parser.parse_args()
     export_graphs(args.input, args.export, args.image_format)
+
+
+
+
+
+
+

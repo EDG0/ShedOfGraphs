@@ -1,7 +1,8 @@
 import sys
 import json
+import argparse
 import networkx as nx
-from history import HistoryLogger
+from update_history import log_history
 
 def load_filter(filename="filter.json"):
     with open(filename) as f:
@@ -10,58 +11,51 @@ def load_filter(filename="filter.json"):
 def count_edges_with_degree_sum(G, target_sum):
     count = 0
     for u, v in G.edges():
-        deg_sum = G.degree[u] + G.degree[v]
-        if deg_sum == target_sum:
+        if G.degree[u] + G.degree[v] == target_sum:
             count += 1
     return count
 
 def graph_passes_filter(G, rules):
     for rule in rules:
-        # Verplicht aanwezige sleutels
-        if "degree_sum" not in rule or "edges" not in rule or "type" not in rule:
-            raise KeyError("Filterregel mist 'degree_sum', 'edges' of 'type'")
-
         deg_sum = rule["degree_sum"]
         required_edges = rule["edges"]
-        rule_type = rule["type"]
-
         count = count_edges_with_degree_sum(G, deg_sum)
 
-        if rule_type == "min":
-            if count < required_edges:
-                return False
-        elif rule_type == "max":
-            if count > required_edges:
-                return False
-        elif rule_type == "exact":
-            if count != required_edges:
-                return False
-        else:
-            raise ValueError(f"Ongeldig filtertype: {rule_type}")
-
+        if rule["type"] == "min" and count < required_edges:
+            return False
+        elif rule["type"] == "max" and count > required_edges:
+            return False
+        elif rule["type"] == "exact" and count != required_edges:
+            return False
     return True
 
-def main():
+def main(skip_history = False):
     rules = load_filter()
-    logger = HistoryLogger()
-    input_lines = []
     passed = []
+    input_count = 0
+    output_count = 0
 
     for line in sys.stdin:
         line = line.strip()
         if not line:
             continue
-        input_lines.append(line)
         try:
+            input_count += 1
             G = nx.from_graph6_bytes(line.encode())
             if graph_passes_filter(G, rules):
-                print(line)
                 passed.append(line)
+                print(line)
+                output_count += 1
         except Exception as e:
             print(f"Fout bij verwerken van graaf: {e}", file=sys.stderr)
 
-    logger.log(len(input_lines), len(passed), rules, passed)
+    if not skip_history:
+        log_history(input_count, output_count, rules, passed)
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--skip-history", action="store_true")
+    args = parser.parse_args()
+    main(skip_history=args.skip_history)
+
 

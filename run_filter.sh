@@ -1,13 +1,12 @@
 #!/bin/bash
 
-# Check of er een argument is
-if [ -z "$1" ]; then
-  echo "Gebruik: ./run_filter.sh <aantal knopen>"
-  exit 1
+if [ "$#" -lt 1 ]; then
+    echo "Gebruik: ./run_filter.sh <aantal_knopen> [--skip-history]"
+    exit 1
 fi
 
-ORDER=$1
+N=$1
+SHIFT_ARGS=${@:2}  # alles behalve het eerste argument
 
-# Genereer grafen en filter ze
-./geng $1 | python3 main.py
-
+# Voer filtering uit met optioneel extra argument
+./geng -d0D4 $N | python3 main.py $SHIFT_ARGS
