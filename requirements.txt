@@ -1,2 +1,5 @@
-networkx==3.4.2
+flask
+networkx
+matplotlib
 pytest
+
