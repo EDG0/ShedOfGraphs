@@ -1,9 +1,14 @@
+# restore_backup.py
+
 import os
 import shutil
 
-# Pad naar de backup directory en history.txt
-backup_dir = os.path.expanduser("~/.filtered-graphs")
-history_file = os.path.join(os.getcwd(), "history.txt")
+# Huidige directory = projectmap
+base_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Correcte locaties
+backup_dir = os.path.join(base_dir, ".filtered-graphs")
+history_file = os.path.join(base_dir, "history.txt")
 
 def list_backups():
     backups = sorted([
@@ -36,7 +41,7 @@ def restore_backup(filename):
 def main():
     backups = list_backups()
     if not backups:
-        print("Geen back-ups gevonden in ~/.filtered-graphs/")
+        print("Geen back-ups gevonden in .filtered-graphs/")
         return
 
     selected = choose_backup(backups)
@@ -44,3 +49,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

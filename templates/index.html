@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Laatste 20 Grafen</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            padding: 6px;
+            border-collapse: collapse;
+        }
+        form {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Laatst Gefilterde Grafen (Max 20)</h2>
+    <table>
+        <tr>
+            <th>Graph6 Code</th>
+            <th>Afbeelding</th>
+            <th>Filterregel(s)</th>
+        </tr>
+        {% for graph in graphs %}
+        <tr>
+            <td>{{ graph.graph6 }}</td>
+            <td>
+                <img src="{{ url_for('static', filename='graphs/' + graph.img) }}" width="150">
+            </td>
+            <td>
+                {% for rule in graph.rule %}
+                    Type: {{ rule.type }}, Som: {{ rule.degree_sum }}, Aantal: {{ rule.edges }}<br>
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h3>Filter instellen</h3>
+    <form method="post">
+        Aantal knopen: <input type="number" name="rule_count" value="1" min="1" max="10"><br><br>
+
+        {% for i in range(0, 3) %}
+        <fieldset>
+            <legend>Filterregel {{ i+1 }}</legend>
+            Graadensom: <input type="number" name="degree_sum_{{ i }}" min="0"><br>
+            Aantal randen: <input type="number" name="count_{{ i }}" min="0"><br>
+            Type:
+            <select name="type_{{ i }}">
+                <option value="min">Minimaal</option>
+                <option value="max">Maximaal</option>
+                <option value="exact">Exact</option>
+            </select>
+        </fieldset>
+        <br>
+        {% endfor %}
+
+        <input type="submit" value="Toepassen">
+    </form>
+</body>
+</html>
+
+

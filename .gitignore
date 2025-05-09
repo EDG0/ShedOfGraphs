@@ -1,6 +1,45 @@
-venv/
+# Python bytecode
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+
+# Virtual environment
+venv/
+
+# Test cache
+.pytest_cache/
+.coverage
+
+# IDE settings
+.vscode/
+*.code-workspace
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Runtime/generated output
+afbeeldingen/
+exported_graphs/
+.filtered-graphs/
+history.txt
+filter.json
+backup
 *.log
-.history
+
+# Shell script backups
+*.sh~
+
+# Temporary files
+*~
+*.swp
+
+# Image output (if generated dynamically)
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.pdf
+*.eps
+
 

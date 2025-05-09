@@ -10,7 +10,7 @@ def backup_history():
     source_file = os.path.join(base_dir, "history.txt")
 
     # Pad naar de map waar de backups worden opgeslagen (~/.filtered-graphs)
-    backup_dir = os.path.expanduser("~/.filtered-graphs")
+    backup_dir = os.path.join(base_dir, ".filtered-graphs")
     os.makedirs(backup_dir, exist_ok=True)
 
     # Als history.txt bestaat, maak een backup
