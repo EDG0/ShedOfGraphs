@@ -5,41 +5,49 @@ __pycache__/
 
 # Virtual environment
 venv/
+.env/
 
-# Test cache
-.pytest_cache/
-.coverage
-
-# IDE settings
+# VSCode / IDE folders
 .vscode/
-*.code-workspace
+.idea/
 
-# System files
+# Test/cache folders
+.pytest_cache/
+*.log
+
+# OS-specific
 .DS_Store
 Thumbs.db
 
-# Runtime/generated output
-afbeeldingen/
+# Compiled or system files
+*.so
+*.dll
+*.exe
+
+# History and output folders
 exported_graphs/
+afbeeldingen/
 .filtered-graphs/
-history.txt
+
+# Generated filters and input/output
 filter.json
-backup
-*.log
+history.txt
 
-# Shell script backups
-*.sh~
+# Backup files
+backup*
+auto_backup.py
+backup_history.py
 
-# Temporary files
-*~
-*.swp
+# Geng & test input files
+geng
+e=*
+test.txt
+test_graphs.txt
+run_parallel_filter.sh'
 
-# Image output (if generated dynamically)
-*.png
-*.jpg
-*.jpeg
-*.svg
-*.pdf
-*.eps
+# Flask cache
+instance/
+*.db
+
 
 
