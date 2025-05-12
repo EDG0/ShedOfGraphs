@@ -1,5 +1,5 @@
 import time
-
+import json
 
 HISTORY_FILE = "history.txt"
 
@@ -21,7 +21,28 @@ def log_history(input_count, output_count, filter_used, passed_graphs, file_path
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--inputs", required=True)
+    parser.add_argument("--filter", required=True)
+    parser.add_argument("-n", "--n_input_graphs", type=int, required=True)
+    args = parser.parse_args()
+
+    try:
+        rules = json.loads(args.filter.replace("'", '"'))
+    except json.JSONDecodeError:
+        print("Fout bij het parsen van de filter JSON.")
+        sys.exit(1)
+
+    with open(args.inputs, "r") as f:
+        passed_graphs = f.readlines()
+
+    log_history(
+        input_count=args.n_input_graphs,
+        output_count=len(passed_graphs),
+        filter_used=rules,
+        passed_graphs=passed_graphs
 
 
 
